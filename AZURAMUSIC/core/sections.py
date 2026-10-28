@@ -1,0 +1,42 @@
+# -----------------------------------------------
+# 🔴 Azura ✘ Music Project
+# 🔷️ Developed & Maintained by: 𝐌ʀ 𝐕ɪɴɴᴜ
+# 📅 Copyright © 2026 – All Rights Reserved
+#
+# 📖 License:
+# This source code is open for educational and non-commercial use ONLY.
+# Commercial use, redistribution, or modification of this source
+# without prior written permission from the author is prohibited.
+#
+# ❤️ Made with dedication & love by 𝐌ʀ 𝐕ɪɴɴᴜ
+# -----------------------------------------------
+
+n = "\n"
+w = " "
+
+bold = lambda x: f"**{x}:** "
+bold_ul = lambda x: f"**--{x}:**-- "
+
+mono = lambda x: f"`{x}`{n}"
+
+
+def section(
+    title: str,
+    body: dict,
+    indent: int = 2,
+    underline: bool = False,
+) -> str:
+    text = (bold_ul(title) + n) if underline else bold(title) + n
+
+    for key, value in body.items():
+        if value is not None:
+            text += (
+                indent * w
+                + bold(key)
+                + (
+                    (value[0] + n)
+                    if isinstance(value, list) and isinstance(value[0], str)
+                    else mono(value)
+                )
+            )
+    return text
