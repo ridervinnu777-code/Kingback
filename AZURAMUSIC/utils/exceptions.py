@@ -1,0 +1,39 @@
+# -----------------------------------------------
+# 🔴 Azura ✘ Music Project
+# 🔷️ Developed & Maintained by: 𝐌ʀ 𝐕ɪɴɴᴜ
+# 📅 Copyright © 2026 – All Rights Reserved
+#
+# 📖 License:
+# This source code is open for educational and non-commercial use ONLY.
+# Commercial use, redistribution, or modification of this source
+# without prior written permission from the author is prohibited.
+#
+# ❤️ Made with dedication & love by 𝐌ʀ 𝐕ɪɴɴᴜ
+# -----------------------------------------------
+from typing import Union
+
+class AssistantErr(Exception):
+    def __init__(self, errr: str):
+        super().__init__(errr)
+
+IGNORED_ERROR_KEYWORDS = [
+    "𝐍ᴏ 𝐀ᴄᴛɪᴠᴇ 𝐕ɪᴅᴇᴏᴄʜᴀᴛ 𝐅ᴏᴜɴᴅ",
+    "Please start videochat",
+]
+
+IGNORED_EXCEPTION_CLASSES = (
+    # AssistantErr,  # ❌ Currently disabled
+)
+
+def is_ignored_error(err: Union[Exception, BaseException]) -> bool:
+    """
+    Determine if the error should be skipped from full logging.
+    Matches:
+    - Exception type (if enabled)
+    - Known substrings in error message
+    """
+    if isinstance(err, IGNORED_EXCEPTION_CLASSES):
+        return True
+
+    err_str = str(err).lower()
+    return any(keyword.lower() in err_str for keyword in IGNORED_ERROR_KEYWORDS)
