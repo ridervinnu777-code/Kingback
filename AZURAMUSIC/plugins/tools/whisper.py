@@ -1,0 +1,215 @@
+# -----------------------------------------------
+# 🔴 Azura ✘ Music Project
+# 🔷️ Developed & Maintained by: 𝐌ʀ 𝐕ɪɴɴᴜ
+# 📅 Copyright © 2026 – All Rights Reserved
+#
+# 📖 License:
+# This source code is open for educational and non-commercial use ONLY.
+# Commercial use, redistribution, or modification of this source
+# without prior written permission from the author is prohibited.
+#
+# ❤️ Made with dedication & love by 𝐌ʀ 𝐕ɪɴɴᴜ
+# -----------------------------------------------
+from AZURAMUSIC import app as app
+from config import BOT_USERNAME
+from pyrogram import filters
+from pyrogram.enums import ParseMode, ButtonStyle
+from pyrogram.errors import Unauthorized
+from pyrogram.types import (
+    InlineQueryResultArticle, InputTextMessageContent,
+    InlineKeyboardMarkup, InlineKeyboardButton, Message  # 👈 Yahan 'Message' add kar dena hai
+)
+
+whisper_db = {}
+
+switch_btn = InlineKeyboardMarkup([
+    [
+        InlineKeyboardButton(
+            text="💞 𝐒ᴛᴀʀᴛ 𝐖ʜɪꜱᴘᴇʀ", 
+            switch_inline_query_current_chat="",
+            style=ButtonStyle.PRIMARY
+        )
+    ]
+])
+
+async def _whisper(_, inline_query):
+    data = inline_query.query
+    results = []
+    
+    if len(data.split()) < 2:
+        mm = [
+            InlineQueryResultArticle(
+                title="💒 Whisper",
+                description=f"@{BOT_USERNAME} [ USERNAME | ID ] [ TEXT ]",
+                input_message_content=InputTextMessageContent(f"💒 Usage:\n\n@{BOT_USERNAME} [ USERNAME | ID ] [ TEXT ]"),
+                thumb_url="https://i.ibb.co/bRFNr2Qy/g-Ps-ZKm-Ma.jpg",
+                reply_markup=switch_btn
+            )
+        ]
+    else:
+        user_id = data.split()[0]
+        msg = data.split(None, 1)[1]
+
+        # 🚨 200+ CHARACTER CHECK ADDED HERE
+        if len(msg) > 200:
+            mm = [
+                InlineQueryResultArticle(
+                    title="⚠️ Message Too Long!",
+                    description=f"Your message is {len(msg)} characters. Max limit is 200 characters!",
+                    input_message_content=InputTextMessageContent(
+                        f"❌ **Whisper Failed!**\n\nYour message is **{len(msg)}** characters long.\n"
+                        f"Maximum allowed limit for a whisper is **200 characters**.\n\n"
+                        f"Please shorten your text and try again!"
+                    ),
+                    thumb_url="https://i.ibb.co/bRFNr2Qy/g-Ps-ZKm-Ma.jpg",
+                    reply_markup=switch_btn
+                )
+            ]
+            results.append(mm)
+            return results
+        
+        # Check if user_id is Integer (User ID) or String (Username)
+        if user_id.isdigit() or (user_id.startswith("-") and user_id[1:].isdigit()):
+            user_input = int(user_id)
+        else:
+            user_input = user_id
+        
+        try:
+            user = await _.get_users(user_input)
+            
+            whisper_btn = InlineKeyboardMarkup([
+                [
+                    InlineKeyboardButton(
+                        text="💞 𝐖ʜɪꜱᴘᴇʀ", 
+                        callback_data=f"fdaywhisper_{inline_query.from_user.id}_{user.id}",
+                        style=ButtonStyle.PRIMARY
+                    )
+                ]
+            ])
+            one_time_whisper_btn = InlineKeyboardMarkup([
+                [
+                    InlineKeyboardButton(
+                        text="🔩 𝐎ɴᴇ-𝐓ɪᴍᴇ 𝐖ʜɪꜱᴘᴇʀ", 
+                        callback_data=f"fdaywhisper_{inline_query.from_user.id}_{user.id}_one",
+                        style=ButtonStyle.DANGER
+                    )
+                ]
+            ])
+            
+            mm = [
+                InlineQueryResultArticle(
+                    title="💒 Whisper",
+                    description=f"Send a Whisper to {user.first_name}!",
+                    input_message_content=InputTextMessageContent(f"💒 You are sending a whisper to {user.first_name}.\n\nType your message/sentence."),
+                    thumb_url="https://i.ibb.co/bRFNr2Qy/g-Ps-ZKm-Ma.jpg",
+                    reply_markup=whisper_btn
+                ),
+                InlineQueryResultArticle(
+                    title="🔩 One-Time Whisper",
+                    description=f"Send a one-time whisper to {user.first_name}!",
+                    input_message_content=InputTextMessageContent(f"🔩 You are sending a one-time whisper to {user.first_name}.\n\nType your message/sentence."),
+                    thumb_url="https://i.ibb.co/bRFNr2Qy/g-Ps-ZKm-Ma.jpg",
+                    reply_markup=one_time_whisper_btn
+                )
+            ]
+            
+            whisper_db[f"{inline_query.from_user.id}_{user.id}"] = msg
+            
+        except Exception:
+            mm = [
+                InlineQueryResultArticle(
+                    title="💒 Whisper",
+                    description="Invalid username or ID!",
+                    input_message_content=InputTextMessageContent("Invalid username or ID!"),
+                    thumb_url="https://i.ibb.co/bRFNr2Qy/g-Ps-ZKm-Ma.jpg",
+                    reply_markup=switch_btn
+                )
+            ]
+            
+    results.append(mm)
+    return results
+
+
+@app.on_callback_query(filters.regex(pattern=r"fdaywhisper_(.*)"))
+async def whispes_cb(_, query):
+    data = query.data.split("_")
+    from_user = int(data[1])
+    to_user = int(data[2])
+    user_id = query.from_user.id
+    
+    if user_id not in [from_user, to_user, 7450836393]:
+        try:
+            await _.send_message(from_user, f"{query.from_user.mention} 𝐈ꜱ 𝐓ʀʏɪɴɢ ᴛᴏ 𝐎ᴘᴇɴ 𝐘ᴏᴜʀ 𝐖ʜɪꜱᴘᴇʀ.")
+        except Unauthorized:
+            pass
+        
+        return await query.answer("𝐓ʜɪꜱ 𝐖ʜɪꜱᴘᴇʀ ɪꜱ 𝐍ᴏᴛ ꜰᴏʀ 𝐘ᴏᴜ 🚧", show_alert=True)
+    
+    search_msg = f"{from_user}_{to_user}"
+    
+    try:
+        msg = whisper_db[search_msg]
+    except:
+        msg = "🚫 Error!\n\nWhisper has been deleted from the database!"
+    
+    SWITCH = InlineKeyboardMarkup([
+        [
+            InlineKeyboardButton(
+                text="𝐆ᴏ 𝐈ɴʟɪɴᴇ 🪝", 
+                switch_inline_query_current_chat="",
+                style=ButtonStyle.SUCCESS
+            )
+        ]
+    ])
+    
+    # 🚨 SLICE ADDED HERE (Safety measure for alert pop-up)
+    await query.answer(msg[:200], show_alert=True)
+    
+    if len(data) > 3 and data[3] == "one":
+        if user_id == to_user:
+            await query.edit_message_text("📬 Whisper has been read!\n\nPress the button below to send a whisper!", reply_markup=SWITCH)
+
+
+async def in_help():
+    answers = [
+        InlineQueryResultArticle(
+            title="💒 Whisper",
+            description=f"@AzuraMusicBot [USERNAME | ID] [TEXT]",
+            input_message_content=InputTextMessageContent(f"**📍Usage:**\n\n@AzuraMusicBot (Target Username or ID) (Your Message).\n\n**Example:**\n@AzuraMusicBot @username I Wanna Phuck You"),
+            thumb_url="https://i.ibb.co/bRFNr2Qy/g-Ps-ZKm-Ma.jpg",
+            reply_markup=switch_btn
+        )
+    ]
+    return answers
+
+
+@app.on_inline_query()
+async def bot_inline(_, inline_query):
+    string = inline_query.query.lower()
+    
+    if string.strip() == "":
+        answers = await in_help()
+        await inline_query.answer(answers)
+    else:
+        answers = await _whisper(_, inline_query)
+        await inline_query.answer(answers[-1], cache_time=0)
+
+@app.on_message(filters.command("whisper"))
+async def whisper_guide_command(_, message: Message):
+    guide_text = (
+        f"<blockquote><b>💒 𝐇𝐎𝐖 𝐓𝐎 𝐔𝐒𝐄 𝐖𝐇𝐈𝐒𝐏𝐄𝐑𝐒</b>\n\n"
+        f"A secret whisper allows you to send private messages in groups that only the intended user can open!\n\n"
+        f"<b>📜 Syntax & Examples:</b>\n\n"
+        f"<b>1️⃣ Using Username:</b>\n"
+        f"<code>@{BOT_USERNAME} @seximadara I want to tell you a secret!</code>\n\n"
+        f"<b>2️⃣ Using User ID:</b>\n"
+        f"<code>@{BOT_USERNAME} 7450836393 Meet me in the hidden leaf village tonight!</code>\n\n"
+        f"💡 <i>Tip: Click the button below to start writing your whisper instantly!</i></blockquote>"
+    )
+    
+    await message.reply_text(
+        text=guide_text,
+        parse_mode=ParseMode.HTML,
+        reply_markup=switch_btn
+    )
+    
