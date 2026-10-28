@@ -1,0 +1,61 @@
+# -----------------------------------------------
+# 🔴 Azura ✘ Music Project
+# 🔷️ Developed & Maintained by: 𝐌ʀ 𝐕ɪɴɴᴜ
+# 📅 Copyright © 2026 – All Rights Reserved
+#
+# 📖 License:
+# This source code is open for educational and non-commercial use ONLY.
+# Commercial use, redistribution, or modification of this source
+# without prior written permission from the author is prohibited.
+#
+# ❤️ Made with dedication & love by 𝐌ʀ 𝐕ɪɴɴᴜ
+# -----------------------------------------------
+from pyrogram import Client, filters
+import requests
+from AZURAMUSIC import app
+
+# Function to chunk the repository info into smaller parts
+def chunk_string(text, chunk_size):
+    return [text[i:i + chunk_size] for i in range(0, len(text), chunk_size)]
+
+@app.on_message(filters.command("allrepo"))
+async def all_repo_command(client, message):
+    try:
+        # Check if there is a GitHub username after the /giverepo command
+        if len(message.command) > 1:
+            github_username = message.command[1]
+
+            # Fetch information about all repositories of the GitHub user
+            repo_info = get_all_repository_info(github_username)
+
+            # Split repository info into smaller chunks
+            chunked_repo_info = chunk_string(repo_info, 4000)  # Split into chunks of 4000 characters
+
+            # Send the repository information in chunks as separate messages
+            for chunk in chunked_repo_info:
+                await message.reply_text(chunk)
+        else:
+            await message.reply_text("𝐏ʟᴇᴀꜱᴇ 𝐄ɴᴛᴇʀ ᴀ 𝐆ɪᴛʜᴜʙ 𝐔ꜱᴇʀɴᴀᴍᴇ 𝐀ꜰᴛᴇʀ ᴛʜᴇ /allrepo 𝐂ᴏᴍᴍᴀɴᴅ.")
+    except Exception as e:
+        await message.reply_text(f"𝐀ɴ 𝐄ʀʀᴏʀ 𝐎ᴄᴄᴜʀʀᴇᴅ: {str(e)}")
+#######
+
+def get_all_repository_info(github_username):
+    # Set up the GitHub API URL for user repositories
+    github_api_url = f"https://api.github.com/users/{github_username}/repos"
+
+    # Perform the request to the GitHub API
+    response = requests.get(github_api_url)
+    data = response.json()
+
+    # Extract relevant information from the response
+    repo_info = "\n\n".join([
+        f"Repository: {repo['full_name']}\n"
+        f"Description: {repo['description']}\n"
+        f"Stars: {repo['stargazers_count']}\n"
+        f"Forks: {repo['forks_count']}\n"
+        f"URL: {repo['html_url']}"
+        for repo in data
+    ])
+
+    return repo_info
