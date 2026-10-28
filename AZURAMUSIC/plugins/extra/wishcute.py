@@ -1,0 +1,94 @@
+# - ----------------------------------------------
+# 🔴 Azura ✘ Music Project
+# 🔷️ Developed & Maintained by: 𝐌ʀ 𝐕ɪɴɴᴜ
+# 📅 Copyright © 2026 – All Rights Reserved
+#
+# 📖 License:
+# This source code is open for educational and non-commercial use ONLY.
+# Commercial use, redistribution, or modification of this source
+# without prior written permission from the author is prohibited.
+#
+# ❤️ Made with dedication & love by 𝐌ʀ 𝐕ɪɴɴᴜ
+# -----------------------------------------------
+from pyrogram import Client, filters
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+import random
+import config
+import requests
+from AZURAMUSIC import app
+
+# ── AttractivePack emoji IDs ──
+_AP_PINK   = 5208942800514596941   # 🩷
+_AP_LOVE   = 5220157149103023925   # 💖
+_AP_FLOWER = 5366458509892276868   # 🌸
+_AP_STAR   = 5413351005779672594   # ⭐
+_AP_BOW    = 5379869575338812919   # 🎀
+_AP_YELLOW = 5363897614167199267   # 💛
+_AP_LILAC  = 5366119022792294762   # 💜
+_AP_SPARK  = 5343528160535270636   # ⚡️
+
+def ap(eid, fb):
+    return f'<emoji id={eid}>{fb}</emoji>' 
+
+
+BUTTON = [[InlineKeyboardButton("𝐒ᴜᴘᴘᴏʀᴛ", url=config.SUPPORT_CHAT)]]
+CUTIE = "https://64.media.tumblr.com/d701f53eb5681e87a957a547980371d2/tumblr_nbjmdrQyje1qa94xto1_500.gif"
+
+
+@app.on_message(filters.command("wish"))
+async def wish(_, m):
+    if len(m.command) < 2:
+        await m.reply("𝐀ᴅᴅ 𝐖ɪꜱʜ 𝐁ᴀʙʏ🌸!")
+        return 
+
+    text = m.text.split(None, 1)[1]
+    wish_count = random.randint(1, 100)
+    
+    # Exact /cute command wala mention style
+    user_id = m.from_user.id if m.from_user else 0
+    user_name = m.from_user.first_name if m.from_user else "User"
+    mention = f"[{user_name}](tg://user?id={user_id})"
+    
+    wish_text = (
+        f"{ap(_AP_LOVE,'💖')} {ap(_AP_FLOWER,'🌸')} <b>𝐇ᴇʏ! {mention}!</b>\n\n"
+        f"{ap(_AP_PINK,'🩷')} <b>𝐘ᴏᴜʀ 𝐖ɪꜱʜ :</b> {text}\n"
+        f"{ap(_AP_STAR,'⭐')} <b>𝐏ᴏꜱꜱɪʙʟᴇ ᴛᴏ :</b> <code>{wish_count}%</code> {ap(_AP_BOW,'🎀')}"
+    )
+    
+    await app.send_animation(
+        chat_id=m.chat.id,
+        animation=CUTIE,
+        caption=wish_text,
+        reply_markup=InlineKeyboardMarkup(BUTTON)
+    )
+
+
+            
+    
+BUTTON = [[InlineKeyboardButton("𝐒ᴜᴘᴘᴏʀᴛ", url=config.SUPPORT_CHAT)]]
+CUTIE = "https://64.media.tumblr.com/d701f53eb5681e87a957a547980371d2/tumblr_nbjmdrQyje1qa94xto1_500.gif"
+
+@app.on_message(filters.command("cute"))
+async def cute(_, message):
+    if not message.reply_to_message:
+        user_id = message.from_user.id
+        user_name = message.from_user.first_name
+    else:
+        user_id = message.reply_to_message.from_user.id
+        user_name = message.reply_to_message.from_user.first_name
+
+    mention = f"[{user_name}](tg://user?id={str(user_id)})"
+    mm = random.randint(1, 100)
+    CUTE = (
+        f"{ap(_AP_LOVE,'💖')} {ap(_AP_PINK,'🩷')} {mention}\n\n"
+        f"{ap(_AP_FLOWER,'🌸')} <b>𝐂ᴜᴛᴇɴᴇꜱꜱ 𝐋ᴇᴠᴇʟ :</b> <code>{mm}%</code>\n"
+        f"{ap(_AP_BOW,'🎀')} <b>𝐂ᴜᴛᴇ 𝐁ᴀʙʏ</b> {ap(_AP_STAR,'⭐')}"
+    )
+
+    await app.send_document(
+        chat_id=message.chat.id,
+        document=CUTIE,
+        caption=CUTE,
+        reply_markup=InlineKeyboardMarkup(BUTTON),
+        reply_to_message_id=message.reply_to_message.message_id if message.reply_to_message else None,
+    )
