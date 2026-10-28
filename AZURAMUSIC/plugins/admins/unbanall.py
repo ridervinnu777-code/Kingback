@@ -1,0 +1,52 @@
+# -----------------------------------------------
+# 🔴 Azura ✘ Music Project
+# 🔷️ Developed & Maintained by: 𝐌ʀ 𝐕ɪɴɴᴜ
+# 📅 Copyright © 2026 – All Rights Reserved
+#
+# 📖 License:
+# This source code is open for educational and non-commercial use ONLY.
+# Commercial use, redistribution, or modification of this source
+# without prior written permission from the author is prohibited.
+#
+# ❤️ Made with dedication & love by 𝐌ʀ 𝐕ɪɴɴᴜ
+# -----------------------------------------------
+from AZURAMUSIC import app
+from config import OWNER_ID
+from pyrogram import filters, enums
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from AZURAMUSIC.utils.Azura_ban import admin_filter
+
+# ── KripanshEmojis_by_fStikBot pack IDs ──
+_KE_OK    = 6129812419028982717   # ✅
+_KE_WARN  = 6129782440157256336   # ⚠️
+_KE_ANGEL = 6129518870899203008   # 👼
+
+def ke(eid, fb):
+    return f'<emoji id={eid}>{fb}</emoji>'
+
+BOT_ID = "8449062687"
+
+@app.on_message(filters.command("unbanall") & admin_filter)
+async def unban_all(_, msg):
+    chat_id = msg.chat.id
+    x = 0
+    bot = await app.get_chat_member(chat_id, BOT_ID)
+    bot_permission = bot.privileges.can_restrict_members == True
+    if bot_permission:
+        banned_users = []
+        async for m in app.get_chat_members(chat_id, filter=enums.ChatMembersFilter.BANNED):
+            banned_users.append(m.user.id)
+            try:
+                await app.unban_chat_member(chat_id, banned_users[x])
+                print(f"ᴜɴʙᴀɴɪɴɢ ᴀʟʟ ᴍᴄ ɪɴ ᴛʜɪs ɢʀᴏᴜᴘ {m.user.mention}")
+                x += 1
+            except Exception:
+                pass
+    else:
+        await msg.reply_text(f"{ke(_KE_WARN,'⚠️')} <b>𝐄ɪᴛʜᴇʀ 𝐈 𝐃ᴏɴ'ᴛ 𝐇ᴀᴠᴇ ᴛʜᴇ 𝐑ɪɢʜᴛ ᴛᴏ 𝐑ᴇꜱᴛʀɪᴄᴛ 𝐔ꜱᴇʀꜱ ᴏʀ 𝐘ᴏᴜ ᴀʀᴇ 𝐍ᴏᴛ ɪɴ 𝐒ᴜᴅᴏ 𝐔ꜱᴇʀꜱ</b>")
+
+@app.on_callback_query(filters.regex("^stop$"))
+async def stop_callback(_, query):
+    await query.message.delete()
+
+###

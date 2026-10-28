@@ -1,0 +1,32 @@
+# -----------------------------------------------
+# 🔴 Azura ✘ Music Project
+# 🔷️ Developed & Maintained by: 𝐌ʀ 𝐕ɪɴɴᴜ
+# 📅 Copyright © 2026 – All Rights Reserved
+#
+# 📖 License:
+# This source code is open for educational and non-commercial use ONLY.
+# Commercial use, redistribution, or modification of this source
+# without prior written permission from the author is prohibited.
+#
+# ❤️ Made with dedication & love by 𝐌ʀ 𝐕ɪɴɴᴜ
+# -----------------------------------------------
+from pyrogram import filters
+from pyrogram.types import Message
+from AZURAMUSIC import app
+from AZURAMUSIC.core.call import AZURA 
+from AZURAMUSIC.utils.database import is_music_playing, music_on
+from AZURAMUSIC.utils.decorators import AdminRightsCheck
+from AZURAMUSIC.utils.inline import close_markup
+from config import BANNED_USERS
+
+
+@app.on_message(filters.command(["resume", "cresume"]) & filters.group & ~BANNED_USERS)
+@AdminRightsCheck
+async def resume_com(cli, message: Message, _, chat_id):
+    if await is_music_playing(chat_id):
+        return await message.reply_text(_["admin_3"])
+    await music_on(chat_id)
+    await AZURA.resume_stream(chat_id)
+    await message.reply_text(
+        _["admin_4"].format(message.from_user.mention), reply_markup=close_markup(_)
+    )
