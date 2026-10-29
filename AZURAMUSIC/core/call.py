@@ -39,6 +39,7 @@ from AZURAMUSIC.utils.formatters import (
 )
 from AZURAMUSIC.utils.inline.play import stream_markup
 from AZURAMUSIC.utils.stream.autoclear import auto_clean
+from AZURAMUSIC.utils.thumbnails import get_thumb
 from AZURAMUSIC.plugins.play.stream import send_queue_empty_msg
 from strings import get_string
 
@@ -590,9 +591,15 @@ class Call(PyTgCalls):
 
             await mystic.delete()
 
-            run = await app.send_message(
+            try:
+                img = await get_thumb(videoid)
+            except Exception:
+                img = config.YOUTUBE_IMG_URL
+
+            run = await app.send_photo(
                 chat_id=original_chat_id,
-                text=_["stream_1"].format(
+                photo=img,
+                caption=_["stream_1"].format(
                     f"https://t.me/{app.username}?start=info_{videoid}",
                     title[:23],
                     check[0]["dur"],
