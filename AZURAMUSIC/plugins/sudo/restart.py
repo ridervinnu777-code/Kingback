@@ -79,7 +79,7 @@ async def update_(client, message, _):
     _update_response_ = "<b>𝐀 𝐍ᴇᴡ 𝐔ᴘᴅᴀᴛᴇ ɪꜱ 𝐀ᴠᴀɪʟᴀʙʟᴇ ꜰᴏʀ ᴛʜᴇ 𝐁ᴏᴛ !</b>\n\n➣ 𝐏ᴜꜱʜɪɴɢ 𝐔ᴘᴅᴀᴛᴇꜱ 𝐍ᴏᴡ\n\n<b><u>𝐔ᴘᴅᴀᴛᴇꜱ:</u></b>\n\n"
     _final_updates_ = _update_response_ + updates
     if len(_final_updates_) > 4096:
-        url = await SHUKLABin(updates)
+        url = await AZURABin(updates)
         nrs = await response.edit(
             f"<b>𝐀 𝐍ᴇᴡ 𝐔ᴘᴅᴀᴛᴇ ɪꜱ 𝐀ᴠᴀɪʟᴀʙʟᴇ ꜰᴏʀ ᴛʜᴇ 𝐁ᴏᴛ !</b>\n\n➣ 𝐏ᴜꜱʜɪɴɢ 𝐔ᴘᴅᴀᴛᴇꜱ 𝐍ᴏᴡ\n\n<u><b>𝐔ᴘᴅᴀᴛᴇꜱ :</b></u>\n\n<𝐀 𝐇ʀᴇꜰ={url}>𝐂ʜᴇᴄᴋ 𝐔ᴘᴅᴀᴛᴇꜱ</a>"
         )
