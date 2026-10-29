@@ -9,6 +9,7 @@ import io
 import os
 import time
 import asyncio
+import traceback
 
 from google import genai
 from pyrogram import filters, enums
@@ -31,7 +32,7 @@ chat_history_db = mongodb.chatbot_history
 # Gemini API
 # =========================================================
 
-GEMINI_API_KEY = "YOUR_GEMINI_API_KEY"
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "YOUR_GEMINI_API_KEY")
 
 client_ai = genai.Client(
     api_key=GEMINI_API_KEY
@@ -619,6 +620,8 @@ Your job here is conversation, helpful answers and coding assistance.
 
 
     except Exception:
+
+        traceback.print_exc()  # real error terminal me dikhega
 
         await message.reply_text(
             "𝐎ᴏᴘꜱ 😭 𝐀ᴢᴜʀᴀ 𝐒ᴇ 𝐀ʙʜɪ 𝐑ᴇᴘʟʏ 𝐍ᴀʜɪ 𝐇ᴏ 𝐏ᴀʏᴀ."
