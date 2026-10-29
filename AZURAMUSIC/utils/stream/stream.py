@@ -322,7 +322,7 @@ async def stream(
             if not forceplay:
                 db[chat_id] = []
 
-            await SHUKLA.join_call(
+            await AZURA.join_call(
                 chat_id,
                 original_chat_id,
                 file_path,
