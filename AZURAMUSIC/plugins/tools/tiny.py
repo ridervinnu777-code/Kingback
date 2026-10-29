@@ -26,7 +26,7 @@ async def tiny_sticker(client, message):
     kontol = await message.reply("𝐏ʀᴏᴄᴇꜱꜱɪɴɢ 𝐏ʟᴇᴀꜱᴇ 𝐖ᴀɪᴛ")
     await kontol.edit_text("🐾")
     ik = await app.download_media(reply)
-    im1 = Image.open("SHUKLAMUSIC/assets/shashank.png")
+    im1 = Image.open("AZURAMUSIC/assets/shashank.png")
     if ik.endswith(".tgs"):
         await app.download_media(reply, "wel2.tgs")
         os.system("lottie_convert.py wel2.tgs json.json")
