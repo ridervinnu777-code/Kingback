@@ -81,7 +81,7 @@ confirmer = {}
 
 import os
 
-GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY", "")
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY", "AQ.Ab8RN6LnbeQwtiM7lcJA5EsFkXRjee_CJ9nwlPPZo_4KGAZ4Mw")
 
 # Debugging
 DEBUG_IGNORE_LOG = getenv("DEBUG_IGNORE_LOG", "False").lower() == "true"
