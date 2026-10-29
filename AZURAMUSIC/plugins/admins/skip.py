@@ -15,6 +15,7 @@ from AZURAMUSIC.utils.database import get_loop
 from AZURAMUSIC.utils.decorators import AdminRightsCheck
 from AZURAMUSIC.utils.inline import close_markup, stream_markup
 from AZURAMUSIC.utils.stream.autoclear import auto_clean
+from AZURAMUSIC.utils.thumbnails import get_thumb
 from config import BANNED_USERS
 
 
@@ -187,8 +188,14 @@ async def skip(cli, message: Message, _, chat_id):
 
         button = stream_markup(_, chat_id)
 
-        run = await message.reply_text(
-            _["stream_1"].format(
+        try:
+            img = await get_thumb(videoid)
+        except Exception:
+            img = config.YOUTUBE_IMG_URL
+
+        run = await message.reply_photo(
+            photo=img,
+            caption=_["stream_1"].format(
                 f"https://t.me/{app.username}?start=info_{videoid}",
                 title[:23],
                 check[0]["dur"],
@@ -271,8 +278,14 @@ async def skip(cli, message: Message, _, chat_id):
 
         # YOUTUBE
         else:
-            run = await message.reply_text(
-                _["stream_1"].format(
+            try:
+                img = await get_thumb(videoid)
+            except Exception:
+                img = config.YOUTUBE_IMG_URL
+
+            run = await message.reply_photo(
+                photo=img,
+                caption=_["stream_1"].format(
                     f"https://t.me/{app.username}?start=info_{videoid}",
                     title[:23],
                     check[0]["dur"],
