@@ -58,7 +58,7 @@ def trim_to_width(text: str, font: ImageFont.FreeTypeFont, max_w: int) -> str:
     return ellipsis
 
 async def get_thumb(videoid: str) -> str:
-    cache_path = os.path.join(CACHE_DIR, f"{videoid}_v4.png")
+    cache_path = os.path.join(CACHE_DIR, f"{videoid}_v5.png")
     if os.path.exists(cache_path):
         return cache_path
 
@@ -75,28 +75,47 @@ async def get_thumb(videoid: str) -> str:
                 f"https://www.youtube.com/watch?v={videoid}", download=False
             ) or {}
 
-    loop = asyncio.get_event_loop()
+    # 1) Primary: YouTube search (no cookies needed, not blocked by bot-check)
+    title = thumbnail = duration = views = None
     try:
-        info = await loop.run_in_executor(None, _fetch_yt_info)
-        if not info:
-            raise ValueError("No info returned")
-        raw_title = info.get("title") or "Unsupported Title"
-        title = re.sub(r"\W+", " ", raw_title).title()
-        thumbnail = info.get("thumbnail") or YOUTUBE_IMG_URL
-        dur_sec = int(info.get("duration") or 0)
-        m, s = divmod(dur_sec, 60)
-        duration = f"{m}:{s:02d}" if dur_sec else None
-        vc = int(info.get("view_count") or 0)
-        if vc >= 1_000_000_000:
-            views = f"{vc / 1_000_000_000:.1f}B views"
-        elif vc >= 1_000_000:
-            views = f"{vc / 1_000_000:.1f}M views"
-        elif vc >= 1_000:
-            views = f"{vc / 1_000:.1f}K views"
-        else:
-            views = f"{vc} views" if vc else "Unknown Views"
+        from py_yt import VideosSearch
+
+        res = await VideosSearch(
+            f"https://www.youtube.com/watch?v={videoid}", limit=1
+        ).next()
+        r = res["result"][0]
+        title = re.sub(r"\W+", " ", r.get("title") or "").title().strip() or None
+        thumbnail = r["thumbnails"][-1]["url"].split("?")[0]
+        duration = r.get("duration")
+        vc = r.get("viewCount") or {}
+        views = vc.get("short") or vc.get("text") or "Unknown Views"
     except Exception:
-        title, thumbnail, duration, views = "Unsupported Title", YOUTUBE_IMG_URL, None, "Unknown Views"
+        title = None
+
+    # 2) Fallback: yt-dlp
+    if not title:
+        loop = asyncio.get_event_loop()
+        try:
+            info = await loop.run_in_executor(None, _fetch_yt_info)
+            if not info:
+                raise ValueError("No info returned")
+            raw_title = info.get("title") or "Unsupported Title"
+            title = re.sub(r"\W+", " ", raw_title).title()
+            thumbnail = info.get("thumbnail") or YOUTUBE_IMG_URL
+            dur_sec = int(info.get("duration") or 0)
+            m, s = divmod(dur_sec, 60)
+            duration = f"{m}:{s:02d}" if dur_sec else None
+            vc = int(info.get("view_count") or 0)
+            if vc >= 1_000_000_000:
+                views = f"{vc / 1_000_000_000:.1f}B views"
+            elif vc >= 1_000_000:
+                views = f"{vc / 1_000_000:.1f}M views"
+            elif vc >= 1_000:
+                views = f"{vc / 1_000:.1f}K views"
+            else:
+                views = f"{vc} views" if vc else "Unknown Views"
+        except Exception:
+            title, thumbnail, duration, views = "Unsupported Title", YOUTUBE_IMG_URL, None, "Unknown Views"
 
     is_live = not duration or str(duration).strip().lower() in {"", "live", "live now"}
     duration_text = "Live" if is_live else duration or "Unknown Mins"
@@ -166,5 +185,8 @@ async def get_thumb(videoid: str) -> str:
     except OSError:
         pass
 
+    # Don't permanently cache fallback ("Unsupported Title") cards
+    if title == "Unsupported Title":
+        cache_path = os.path.join(CACHE_DIR, f"{videoid}_fallback.png")
     bg.save(cache_path)
     return cache_path
