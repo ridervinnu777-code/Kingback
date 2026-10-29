@@ -11,6 +11,7 @@ from AZURAMUSIC.utils.exceptions import AssistantErr
 from AZURAMUSIC.utils.inline import aq_markup, close_markup, stream_markup
 from AZURAMUSIC.utils.pastebin import AZURABin
 from AZURAMUSIC.utils.stream.queue import put_queue, put_queue_index
+from AZURAMUSIC.utils.thumbnails import get_thumb
 
 
 async def stream(
@@ -84,7 +85,7 @@ async def stream(
                 except Exception:
                     raise AssistantErr(_["play_14"])
 
-                await AZURA.join_call(
+                await SHUKLA.join_call(
                     chat_id,
                     original_chat_id,
                     file_path,
@@ -204,9 +205,15 @@ async def stream(
 
             button = stream_markup(_, chat_id)
 
-            run = await app.send_message(
+            try:
+                img = await get_thumb(vidid)
+            except Exception:
+                img = config.YOUTUBE_IMG_URL
+
+            run = await app.send_photo(
                 original_chat_id,
-                _["stream_1"].format(
+                photo=img,
+                caption=_["stream_1"].format(
                     f"https://t.me/{app.username}?start=info_{vidid}",
                     title[:23],
                     duration_min,
@@ -322,7 +329,7 @@ async def stream(
             if not forceplay:
                 db[chat_id] = []
 
-            await AZURA.join_call(
+            await SHUKLA.join_call(
                 chat_id,
                 original_chat_id,
                 file_path,
