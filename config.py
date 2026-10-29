@@ -91,20 +91,20 @@ LOG_GROUP_ID = int(getenv("LOG_GROUP_ID", getenv("LOGGER_ID", "0")))
 SUPPORT_GROUP = getenv("SUPPORT_GROUP", SUPPORT_CHAT)
 
 # Image URLs
-SHASHANK_IMG = getenv("SHASHANK_IMG", "https://i.ibb.co/yFHCgpRG/p5-Vg-N6-Au.jpg").split(",") if "," in getenv("SHASHANK_IMG", "") else [getenv("SHASHANK_IMG", "https://i.ibb.co/yFHCgpRG/p5-Vg-N6-Au.jpg")]
+SHASHANK_IMG = getenv("SHASHANK_IMG", "https://iili.io/nkMQ2F2.jpg").split(",") if "," in getenv("SHASHANK_IMG", "") else [getenv("SHASHANK_IMG", "https://iili.io/nkMQ2F2.jpg")]
 
-START_IMG_URL = getenv("START_IMG_URL", "https://i.supaimg.com/14ac9144-a5d0-49c4-9fc7-8c73f527216c/7bc9f0b7-9e84-470f-858f-b2f9f1ee88ba.png")
-PING_IMG_URL = getenv("PING_IMG_URL", "https://i.supaimg.com/14ac9144-a5d0-49c4-9fc7-8c73f527216c/7bc9f0b7-9e84-470f-858f-b2f9f1ee88ba.png")
-PLAYLIST_IMG_URL = "https://i.supaimg.com/14ac9144-a5d0-49c4-9fc7-8c73f527216c/7bc9f0b7-9e84-470f-858f-b2f9f1ee88ba.png"
-STATS_IMG_URL = "https://i.supaimg.com/14ac9144-a5d0-49c4-9fc7-8c73f527216c/7bc9f0b7-9e84-470f-858f-b2f9f1ee88ba.png"
-TELEGRAM_AUDIO_URL = "https://i.supaimg.com/14ac9144-a5d0-49c4-9fc7-8c73f527216c/7bc9f0b7-9e84-470f-858f-b2f9f1ee88ba.png"
-TELEGRAM_VIDEO_URL = "https://i.supaimg.com/14ac9144-a5d0-49c4-9fc7-8c73f527216c/7bc9f0b7-9e84-470f-858f-b2f9f1ee88ba.png"
-STREAM_IMG_URL = "https://i.supaimg.com/14ac9144-a5d0-49c4-9fc7-8c73f527216c/7bc9f0b7-9e84-470f-858f-b2f9f1ee88ba.png"
-SOUNCLOUD_IMG_URL = "https://i.supaimg.com/14ac9144-a5d0-49c4-9fc7-8c73f527216c/7bc9f0b7-9e84-470f-858f-b2f9f1ee88ba.png"
-YOUTUBE_IMG_URL = "hhttps://i.supaimg.com/14ac9144-a5d0-49c4-9fc7-8c73f527216c/7bc9f0b7-9e84-470f-858f-b2f9f1ee88ba.png"
-SPOTIFY_ARTIST_IMG_URL = "https://i.supaimg.com/14ac9144-a5d0-49c4-9fc7-8c73f527216c/7bc9f0b7-9e84-470f-858f-b2f9f1ee88ba.png"
-SPOTIFY_ALBUM_IMG_URL = "https://i.supaimg.com/14ac9144-a5d0-49c4-9fc7-8c73f527216c/7bc9f0b7-9e84-470f-858f-b2f9f1ee88ba.png"
-SPOTIFY_PLAYLIST_IMG_URL = "https://i.supaimg.com/14ac9144-a5d0-49c4-9fc7-8c73f527216c/7bc9f0b7-9e84-470f-858f-b2f9f1ee88ba.png"
+START_IMG_URL = getenv("START_IMG_URL", "https://iili.io/nkMQ2F2.jpg")
+PING_IMG_URL = getenv("PING_IMG_URL", "https://iili.io/nkMQ2F2.jpg")
+PLAYLIST_IMG_URL = "https://iili.io/nkMQ2F2.jpg"
+STATS_IMG_URL = "https://iili.io/nkMQ2F2.jpg"
+TELEGRAM_AUDIO_URL = "https://iili.io/nkMQ2F2.jpg"
+TELEGRAM_VIDEO_URL = "https://iili.io/nkMQ2F2.jpg"
+STREAM_IMG_URL = "https://iili.io/nkMQ2F2.jpg"
+SOUNCLOUD_IMG_URL = "https://iili.io/nkMQ2F2.jpg"
+YOUTUBE_IMG_URL = "hhttps://iili.io/nkMQ2F2.jpg"
+SPOTIFY_ARTIST_IMG_URL = "https://iili.io/nkMQ2F2.jpg"
+SPOTIFY_ALBUM_IMG_URL = "https://iili.io/nkMQ2F2.jpg"
+SPOTIFY_PLAYLIST_IMG_URL = "https://iili.io/nkMQ2F2.jpg"
 
 
 # Helper function
@@ -123,4 +123,4 @@ if SUPPORT_CHANNEL and not re.match(r"(?:http|https)://", SUPPORT_CHANNEL):
 if SUPPORT_CHAT and not re.match(r"(?:http|https)://", SUPPORT_CHAT):
     raise SystemExit(
         "[ERROR] - Your SUPPORT_CHAT url is invalid. It must start with https://"
-    )
+)
